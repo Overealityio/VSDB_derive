@@ -1,11 +1,11 @@
 [package]
 name = "vsdb_derive"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["fanhui.x@gmail.com"]
 edition = "2021"
-description = "Versioned Stateful DataBase, mainly used in blockchain scene."
-homepage = "https://github.com/ccmlm/vsdb"
-repository = "https://github.com/ccmlm/vsdb"
+description = "Some procedure macro implementations for vsdb."
+homepage = "https://github.com/ccmlm/vsdb_derive"
+repository = "https://github.com/ccmlm/vsdb_derive"
 keywords = ["git", "leveldb", "rocksdb", "version", "vcs"]
 categories = ["database-implementations", "data-structures", "algorithms", "caching"]
 license = "MIT"
