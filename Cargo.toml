@@ -1,7 +1,14 @@
 [package]
 name = "vsdb_derive"
 version = "0.1.0"
+authors = ["fanhui.x@gmail.com"]
 edition = "2021"
+description = "Versioned Stateful DataBase, mainly used in blockchain scene."
+homepage = "https://github.com/ccmlm/vsdb"
+repository = "https://github.com/ccmlm/vsdb"
+keywords = ["git", "leveldb", "rocksdb", "version", "vcs"]
+categories = ["database-implementations", "data-structures", "algorithms", "caching"]
+license = "MIT"
 
 [lib]
 proc-macro = true
