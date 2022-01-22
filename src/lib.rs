@@ -147,7 +147,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 #branch_has_children
             }
 
-            fn branch_set_default(&self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
+            fn branch_set_default(&mut self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
                 #branch_set_default
                 Ok(())
             }
@@ -737,7 +737,7 @@ fn gen_branch_set_default(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_set_default(&self.#id, branch_name).c(ruc::d!())?;
+                        vsdb::VsMgmt::branch_set_default(&mut self.#id, branch_name).c(ruc::d!())?;
                     }
                 });
                 quote! {
@@ -748,7 +748,7 @@ fn gen_branch_set_default(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_set_default(&self.#id, branch_name).c(ruc::d!())?;
+                        vsdb::VsMgmt::branch_set_default(&mut self.#id, branch_name).c(ruc::d!())?;
                     }
                 });
                 quote! {
