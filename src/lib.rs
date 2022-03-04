@@ -26,6 +26,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     let branch_create_by_base_branch_version =
         gen_branch_create_by_base_branch_version(&input.data);
     let branch_exists = gen_branch_exists(&input.data);
+    let branch_has_versions = gen_branch_has_versions(&input.data);
     let branch_remove = gen_branch_remove(&input.data);
     let branch_truncate = gen_branch_truncate(&input.data);
     let branch_truncate_to = gen_branch_truncate_to(&input.data);
@@ -113,6 +114,10 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 
             fn branch_exists(&self, branch_name: vsdb::BranchName) -> bool {
                 #branch_exists
+            }
+
+            fn branch_has_versions(&self, branch_name: vsdb::BranchName) -> bool {
+                #branch_has_versions
             }
 
             fn branch_remove(&self, branch_name: vsdb::BranchName) -> Result<()> {
@@ -533,6 +538,36 @@ fn gen_branch_exists(data: &Data) -> TokenStream {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
                         vsdb::VsMgmt::branch_exists(&self.#id, branch_name) &&
+                    }
+                });
+                quote! {
+                    #(#recurse)* true
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+fn gen_branch_has_versions(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::branch_has_versions(&self.#id, branch_name) &&
+                    }
+                });
+                quote! {
+                    #(#recurse)* true
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::branch_has_versions(&self.#id, branch_name) &&
                     }
                 });
                 quote! {
