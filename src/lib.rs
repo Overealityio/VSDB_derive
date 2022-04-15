@@ -267,7 +267,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 guard
             }
 
-            unsafe fn branch_swap(&self, br1: vsdb::BranchName, br2: vsdb::BranchName) -> Result<()> {
+            unsafe fn branch_swap(&mut self, br1: vsdb::BranchName, br2: vsdb::BranchName) -> Result<()> {
                 #branch_swap
                 Ok(())
             }
@@ -1340,7 +1340,7 @@ fn gen_branch_swap(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_swap(&self.#id, br1, br2).c(d!())?;
+                        vsdb::VsMgmt::branch_swap(&mut self.#id, br1, br2).c(d!())?;
                     }
                 });
                 quote! {
@@ -1351,7 +1351,7 @@ fn gen_branch_swap(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_swap(&self.#id, br1, br2).c(d!())?;
+                        vsdb::VsMgmt::branch_swap(&mut self.#id, br1, br2).c(d!())?;
                     }
                 });
                 quote! {
