@@ -45,6 +45,18 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     let branch_set_default = gen_branch_set_default(&input.data);
     let prune = gen_prune(&input.data);
 
+    let version_exists_globally = gen_version_exists_globally(&input.data);
+    let version_list = gen_version_list(&input.data);
+    let version_list_by_branch = gen_version_list_by_branch(&input.data);
+    let version_list_globally = gen_version_list_globally(&input.data);
+    let version_has_change_set = gen_version_has_change_set(&input.data);
+    let version_clean_up_globally = gen_version_clean_up_globally(&input.data);
+    let version_revert_globally = gen_version_revert_globally(&input.data);
+    let branch_is_empty = gen_branch_is_empty(&input.data);
+    let branch_list = gen_branch_list(&input.data);
+    let branch_get_default = gen_branch_get_default(&input.data);
+    let branch_swap = gen_branch_swap(&input.data);
+
     let expanded = quote! {
         use ruc::*;
         impl #impl_generics vsdb::VsMgmt for #name #ty_generics #where_clause {
@@ -193,6 +205,70 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 
             fn prune(&self, reserved_ver_num: Option<usize>) -> Result<()> {
                 #prune
+                Ok(())
+            }
+
+            fn version_exists_globally(&self, version_name: vsdb::VersionName) -> bool {
+                #version_exists_globally
+            }
+
+            fn version_list(&self) -> Result<Vec<vsdb::VersionNameOwned>> {
+                let guard_default: Vec<vsdb::VersionNameOwned> = Default::default();
+                let mut guard: Vec<vsdb::VersionNameOwned> = Default::default();
+                #version_list
+                Ok(guard)
+            }
+
+            fn version_list_by_branch(&self, branch_name: vsdb::BranchName) -> Result<Vec<vsdb::VersionNameOwned>> {
+                let guard_default: Vec<vsdb::VersionNameOwned> = Default::default();
+                let mut guard: Vec<vsdb::VersionNameOwned> = Default::default();
+                #version_list_by_branch
+                Ok(guard)
+            }
+
+            fn version_list_globally(&self) -> Vec<vsdb::VersionNameOwned> {
+                let guard_default: Vec<vsdb::VersionNameOwned> = Default::default();
+                let mut guard: Vec<vsdb::VersionNameOwned> = Default::default();
+                #version_list_globally
+                guard
+            }
+
+            fn version_has_change_set(&self, version_name: vsdb::VersionName) -> Result<bool> {
+                #version_has_change_set
+                Ok(true)
+            }
+
+            fn version_clean_up_globally(&self) -> Result<()> {
+                #version_clean_up_globally
+                Ok(())
+            }
+
+            unsafe fn version_revert_globally(&self, version_name: vsdb::VersionName) -> Result<()> {
+                #version_revert_globally
+                Ok(())
+            }
+
+            fn branch_is_empty(&self, branch_name: vsdb::BranchName) -> Result<bool> {
+                #branch_is_empty
+                Ok(true)
+            }
+
+            fn branch_list(&self) -> Vec<vsdb::BranchNameOwned> {
+                let guard_default: Vec<vsdb::BranchNameOwned> = Default::default();
+                let mut guard: Vec<vsdb::BranchNameOwned> = Default::default();
+                #branch_list
+                guard
+            }
+
+            fn branch_get_default(&self) -> vsdb::BranchNameOwned {
+                let guard_default = vsdb::BranchNameOwned::default();
+                let mut guard = vsdb::BranchNameOwned::default();
+                #branch_get_default
+                guard
+            }
+
+            unsafe fn branch_swap(&self, br1: vsdb::BranchName, br2: vsdb::BranchName) -> Result<()> {
+                #branch_swap
                 Ok(())
             }
         }
@@ -935,6 +1011,347 @@ fn gen_prune(data: &Data) -> TokenStream {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
                         vsdb::VsMgmt::prune(&self.#id, reserved_ver_num).c(d!())?;
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_version_exists_globally(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::version_exists_globally(&self.#id, version_name) &&
+                    }
+                });
+                quote! {
+                    #(#recurse)* true
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::version_exists_globally(&self.#id, version_name) &&
+                    }
+                });
+                quote! {
+                    #(#recurse)* true
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_version_list(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+						let new = vsdb::VsMgmt::version_list(&self.#id).c(d!())?; if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+						let new = vsdb::VsMgmt::version_list(&self.#id).c(d!())?; if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_version_list_by_branch(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+						let new = vsdb::VsMgmt::version_list_by_branch(&self.#id, branch_name).c(d!())?; if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+						let new = vsdb::VsMgmt::version_list_by_branch(&self.#id, branch_name).c(d!())?; if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_version_list_globally(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+						let new = vsdb::VsMgmt::version_list_globally(&self.#id); if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+						let new = vsdb::VsMgmt::version_list_globally(&self.#id); if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_version_has_change_set(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+                        if !vsdb::VsMgmt::version_has_change_set(&self.#id, version_name)? { return Ok(false); }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+                        if !vsdb::VsMgmt::version_has_change_set(&self.#id, version_name)? { return Ok(false); }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_version_clean_up_globally(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::version_clean_up_globally(&self.#id).c(d!())?;
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::version_clean_up_globally(&self.#id).c(d!())?;
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_version_revert_globally(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::version_revert_globally(&self.#id, version_name).c(d!())?;
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::version_revert_globally(&self.#id, version_name).c(d!())?;
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_branch_is_empty(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+                        if !vsdb::VsMgmt::branch_is_empty(&self.#id, branch_name).c(d!())? { return Ok(false); }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+                        if !vsdb::VsMgmt::branch_is_empty(&self.#id, branch_name).c(d!())? { return Ok(false); }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_branch_list(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+						let new = vsdb::VsMgmt::branch_list(&self.#id); if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+						let new = vsdb::VsMgmt::branch_list(&self.#id); if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_branch_get_default(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+						let new = vsdb::VsMgmt::branch_get_default(&self.#id); if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+						let new = vsdb::VsMgmt::branch_get_default(&self.#id); if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_branch_swap(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::branch_swap(&self.#id, br1, br2).c(d!())?;
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::branch_swap(&self.#id, br1, br2).c(d!())?;
                     }
                 });
                 quote! {
