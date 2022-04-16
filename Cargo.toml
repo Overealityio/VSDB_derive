@@ -1,6 +1,6 @@
 [package]
 name = "vsdb_derive"
-version = "0.30.0"
+version = "0.30.1"
 authors = ["fanhui.x@gmail.com"]
 edition = "2021"
 description = "Some procedure macro implementations for vsdb."

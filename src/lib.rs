@@ -1155,8 +1155,9 @@ fn gen_version_list(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        let new = vsdb::VsMgmt::version_list(&self.#id).c(d!())?;
-                        if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                        if guard == guard_default {
+                            guard = vsdb::VsMgmt::version_list(&self.#id).c(d!())?;
+                        }
                     }
                 });
                 quote! {
@@ -1167,8 +1168,9 @@ fn gen_version_list(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        let new = vsdb::VsMgmt::version_list(&self.#id).c(d!())?;
-                        if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                        if guard == guard_default {
+                            guard = vsdb::VsMgmt::version_list(&self.#id).c(d!())?;
+                        }
                     }
                 });
                 quote! {
@@ -1188,8 +1190,9 @@ fn gen_version_list_by_branch(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        let new = vsdb::VsMgmt::version_list_by_branch(&self.#id, branch_name).c(d!())?;
-                        if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                        if guard == guard_default {
+                            guard = vsdb::VsMgmt::version_list_by_branch(&self.#id, branch_name).c(d!())?;
+                        }
                     }
                 });
                 quote! {
@@ -1200,8 +1203,9 @@ fn gen_version_list_by_branch(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        let new = vsdb::VsMgmt::version_list_by_branch(&self.#id, branch_name).c(d!())?;
-                        if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                        if guard == guard_default {
+                            guard = vsdb::VsMgmt::version_list_by_branch(&self.#id, branch_name).c(d!())?;
+                        }
                     }
                 });
                 quote! {
@@ -1221,8 +1225,9 @@ fn gen_version_list_globally(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        let new = vsdb::VsMgmt::version_list_globally(&self.#id);
-                        if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                        if guard == guard_default {
+                            guard = vsdb::VsMgmt::version_list_globally(&self.#id);
+                        }
                     }
                 });
                 quote! {
@@ -1233,8 +1238,9 @@ fn gen_version_list_globally(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        let new = vsdb::VsMgmt::version_list_globally(&self.#id);
-                        if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                        if guard == guard_default {
+                            guard = vsdb::VsMgmt::version_list_globally(&self.#id);
+                        }
                     }
                 });
                 quote! {
@@ -1378,8 +1384,9 @@ fn gen_branch_list(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        let new = vsdb::VsMgmt::branch_list(&self.#id);
-                        if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                        if guard == guard_default {
+                            guard = vsdb::VsMgmt::branch_list(&self.#id);
+                        }
                     }
                 });
                 quote! {
@@ -1390,8 +1397,9 @@ fn gen_branch_list(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        let new = vsdb::VsMgmt::branch_list(&self.#id);
-                        if guard_default != new { if guard_default == guard { guard = new; } else { assert_eq!(guard, new); } }
+                        if guard == guard_default {
+                            guard = vsdb::VsMgmt::branch_list(&self.#id);
+                        }
                     }
                 });
                 quote! {
