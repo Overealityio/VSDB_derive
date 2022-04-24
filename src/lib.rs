@@ -37,6 +37,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     let branch_exists = gen_branch_exists(&input.data);
     let branch_has_versions = gen_branch_has_versions(&input.data);
     let branch_remove = gen_branch_remove(&input.data);
+    let branch_keep_only = gen_branch_keep_only(&input.data);
     let branch_truncate = gen_branch_truncate(&input.data);
     let branch_truncate_to = gen_branch_truncate_to(&input.data);
     let branch_pop_version = gen_branch_pop_version(&input.data);
@@ -183,6 +184,11 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 
             fn branch_remove(&self, branch_name: vsdb::BranchName) -> Result<()> {
                 #branch_remove
+                Ok(())
+            }
+
+            fn branch_keep_only(&self, branch_names: &[vsdb::BranchName]) -> Result<()> {
+                #branch_keep_only
                 Ok(())
             }
 
@@ -888,6 +894,37 @@ fn gen_branch_remove(data: &Data) -> TokenStream {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
                         vsdb::VsMgmt::branch_remove(&self.#id, branch_name).c(d!())?;
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unit => todo!(),
+        },
+        Data::Enum(_) | Data::Union(_) => todo!(),
+    }
+}
+
+fn gen_branch_keep_only(data: &Data) -> TokenStream {
+    match *data {
+        Data::Struct(ref data) => match data.fields {
+            Fields::Named(ref fields) => {
+                let recurse = fields.named.iter().map(|f| {
+                    let id = &f.ident;
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::branch_keep_only(&self.#id, branch_names).c(d!())?;
+                    }
+                });
+                quote! {
+                    #(#recurse)*
+                }
+            }
+            Fields::Unnamed(ref fields) => {
+                let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
+                    let id = Index::from(i);
+                    quote_spanned! {f.span()=>
+                        vsdb::VsMgmt::branch_keep_only(&self.#id, branch_names).c(d!())?;
                     }
                 });
                 quote! {
