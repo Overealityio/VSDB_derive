@@ -61,7 +61,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     let expanded = quote! {
         use ruc::*;
         impl #impl_generics vsdb::VsMgmt for #name #ty_generics #where_clause {
-            fn version_create(&self, version_name: vsdb::VersionName) -> Result<()> {
+            fn version_create(&self, version_name: vsdb::VersionName) -> ruc::Result<()> {
                 #version_create
                 Ok(())
             }
@@ -70,7 +70,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 &self,
                 version_name: vsdb::VersionName,
                 branch_name: vsdb::BranchName,
-                ) -> Result<()> {
+                ) -> ruc::Result<()> {
                 #version_create_by_branch
                 Ok(())
             }
@@ -87,17 +87,17 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 #version_exists_on_branch
             }
 
-            fn version_pop(&self) -> Result<()> {
+            fn version_pop(&self) -> ruc::Result<()> {
                 #version_pop
                 Ok(())
             }
 
-            fn version_pop_by_branch(&self, branch_name: vsdb::BranchName) -> Result<()> {
+            fn version_pop_by_branch(&self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
                 #version_pop_by_branch
                 Ok(())
             }
 
-            unsafe fn version_rebase(&self, base_version: vsdb::VersionName) -> Result<()> {
+            unsafe fn version_rebase(&self, base_version: vsdb::VersionName) -> ruc::Result<()> {
                 #version_rebase
                 Ok(())
             }
@@ -106,7 +106,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 &self,
                 base_version: vsdb::VersionName,
                 branch_name: vsdb::BranchName
-            ) -> Result<()> {
+            ) -> ruc::Result<()> {
                 #version_rebase_by_branch
                 Ok(())
             }
@@ -116,7 +116,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 branch_name: vsdb::BranchName,
                 version_name: vsdb::VersionName,
                 force: bool
-            ) -> Result<()> {
+            ) -> ruc::Result<()> {
                 #branch_create
                 Ok(())
             }
@@ -127,7 +127,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 version_name: vsdb::VersionName,
                 base_branch_name: vsdb::ParentBranchName,
                 force: bool,
-            ) -> Result<()> {
+            ) -> ruc::Result<()> {
                 #branch_create_by_base_branch
                 Ok(())
             }
@@ -139,7 +139,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 base_branch_name: vsdb::ParentBranchName,
                 base_version_name: vsdb::VersionName,
                 force: bool
-            ) -> Result<()> {
+            ) -> ruc::Result<()> {
                 #branch_create_by_base_branch_version
                 Ok(())
             }
@@ -148,7 +148,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 &self,
                 branch_name: vsdb::BranchName,
                 force: bool
-            ) -> Result<()> {
+            ) -> ruc::Result<()> {
                 #branch_create_without_new_version
                 Ok(())
             }
@@ -158,7 +158,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 branch_name: vsdb::BranchName,
                 base_branch_name: vsdb::ParentBranchName,
                 force: bool
-            ) -> Result<()> {
+            ) -> ruc::Result<()> {
                 #branch_create_by_base_branch_without_new_version
                 Ok(())
             }
@@ -169,7 +169,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 base_branch_name: vsdb::ParentBranchName,
                 base_version_name: vsdb::VersionName,
                 force: bool
-            ) -> Result<()> {
+            ) -> ruc::Result<()> {
                 #branch_create_by_base_branch_version_without_new_version
                 Ok(())
             }
@@ -182,17 +182,17 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 #branch_has_versions
             }
 
-            fn branch_remove(&self, branch_name: vsdb::BranchName) -> Result<()> {
+            fn branch_remove(&self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
                 #branch_remove
                 Ok(())
             }
 
-            fn branch_keep_only(&self, branch_names: &[vsdb::BranchName]) -> Result<()> {
+            fn branch_keep_only(&self, branch_names: &[vsdb::BranchName]) -> ruc::Result<()> {
                 #branch_keep_only
                 Ok(())
             }
 
-            fn branch_truncate(&self, branch_name: vsdb::BranchName) -> Result<()> {
+            fn branch_truncate(&self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
                 #branch_truncate
                 Ok(())
             }
@@ -201,12 +201,12 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 &self,
                 branch_name: vsdb::BranchName,
                 last_version_name: vsdb::VersionName,
-            ) -> Result<()> {
+            ) -> ruc::Result<()> {
                 #branch_truncate_to
                 Ok(())
             }
 
-            fn branch_pop_version(&self, branch_name: vsdb::BranchName) -> Result<()> {
+            fn branch_pop_version(&self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
                 #branch_pop_version
                 Ok(())
             }
@@ -215,7 +215,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 &self,
                 branch_name: vsdb::BranchName,
                 target_branch_name: vsdb::BranchName
-            ) -> Result<()> {
+            ) -> ruc::Result<()> {
                 #branch_merge_to
                 Ok(())
             }
@@ -224,17 +224,17 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 &self,
                 branch_name: vsdb::BranchName,
                 target_branch_name: vsdb::BranchName
-            ) -> Result<()> {
+            ) -> ruc::Result<()> {
                 #branch_merge_to_force
                 Ok(())
             }
 
-            fn branch_set_default(&mut self, branch_name: vsdb::BranchName) -> Result<()> {
+            fn branch_set_default(&mut self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
                 #branch_set_default
                 Ok(())
             }
 
-            fn prune(&self, reserved_ver_num: Option<usize>) -> Result<()> {
+            fn prune(&self, reserved_ver_num: Option<usize>) -> ruc::Result<()> {
                 #prune
                 Ok(())
             }
@@ -243,7 +243,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 #version_exists_globally
             }
 
-            fn version_list(&self) -> Result<Vec<vsdb::VersionNameOwned>> {
+            fn version_list(&self) -> ruc::Result<Vec<vsdb::VersionNameOwned>> {
                 let guard_default: Vec<vsdb::VersionNameOwned> = Default::default();
                 let mut guard: Vec<vsdb::VersionNameOwned> = Default::default();
                 #version_list
@@ -251,7 +251,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
             }
 
             fn version_list_by_branch(&self, branch_name: vsdb::BranchName)
-                -> Result<Vec<vsdb::VersionNameOwned>> {
+                -> ruc::Result<Vec<vsdb::VersionNameOwned>> {
 
                 let guard_default: Vec<vsdb::VersionNameOwned> = Default::default();
                 let mut guard: Vec<vsdb::VersionNameOwned> = Default::default();
@@ -266,22 +266,22 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 guard
             }
 
-            fn version_has_change_set(&self, version_name: vsdb::VersionName) -> Result<bool> {
+            fn version_has_change_set(&self, version_name: vsdb::VersionName) -> ruc::Result<bool> {
                 #version_has_change_set
                 Ok(true)
             }
 
-            fn version_clean_up_globally(&self) -> Result<()> {
+            fn version_clean_up_globally(&self) -> ruc::Result<()> {
                 #version_clean_up_globally
                 Ok(())
             }
 
-            unsafe fn version_revert_globally(&self, version_name: vsdb::VersionName) -> Result<()> {
+            unsafe fn version_revert_globally(&self, version_name: vsdb::VersionName) -> ruc::Result<()> {
                 #version_revert_globally
                 Ok(())
             }
 
-            fn branch_is_empty(&self, branch_name: vsdb::BranchName) -> Result<bool> {
+            fn branch_is_empty(&self, branch_name: vsdb::BranchName) -> ruc::Result<bool> {
                 #branch_is_empty
                 Ok(true)
             }
@@ -304,7 +304,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 &mut self,
                 br1: vsdb::BranchName,
                 br2: vsdb::BranchName
-            ) -> Result<()> {
+            ) -> ruc::Result<()> {
                 #branch_swap
                 Ok(())
             }
