@@ -1,11 +1,11 @@
 [package]
 name = "vsdb_derive"
-version = "0.35.3"
-authors = ["fanhui.x@gmail.com"]
+version = "0.37.1"
+authors = ["mlm"]
 edition = "2021"
 description = "Some procedure macro implementations for vsdb."
-homepage = "https://github.com/ccmlm/vsdb_derive"
-repository = "https://github.com/ccmlm/vsdb_derive"
+homepage = "https://github.com/rust-util-collections/vsdb_derive"
+repository = "https://github.com/rust-util-collections/vsdb_derive"
 keywords = ["git", "leveldb", "rocksdb", "version", "vcs"]
 categories = ["database-implementations", "data-structures", "algorithms", "caching"]
 license = "MIT"
