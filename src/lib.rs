@@ -61,13 +61,13 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     let expanded = quote! {
         use ruc::*;
         impl #impl_generics vsdb::VsMgmt for #name #ty_generics #where_clause {
-            fn version_create(&self, version_name: vsdb::VersionName) -> ruc::Result<()> {
+            fn version_create(&mut self, version_name: vsdb::VersionName) -> ruc::Result<()> {
                 #version_create
                 Ok(())
             }
 
             fn version_create_by_branch(
-                &self,
+                &mut self,
                 version_name: vsdb::VersionName,
                 branch_name: vsdb::BranchName,
                 ) -> ruc::Result<()> {
@@ -87,23 +87,23 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 #version_exists_on_branch
             }
 
-            fn version_pop(&self) -> ruc::Result<()> {
+            fn version_pop(&mut self) -> ruc::Result<()> {
                 #version_pop
                 Ok(())
             }
 
-            fn version_pop_by_branch(&self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
+            fn version_pop_by_branch(&mut self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
                 #version_pop_by_branch
                 Ok(())
             }
 
-            unsafe fn version_rebase(&self, base_version: vsdb::VersionName) -> ruc::Result<()> {
+            unsafe fn version_rebase(&mut self, base_version: vsdb::VersionName) -> ruc::Result<()> {
                 #version_rebase
                 Ok(())
             }
 
             unsafe fn version_rebase_by_branch(
-                &self,
+                &mut self,
                 base_version: vsdb::VersionName,
                 branch_name: vsdb::BranchName
             ) -> ruc::Result<()> {
@@ -112,7 +112,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
             }
 
             fn branch_create(
-                &self,
+                &mut self,
                 branch_name: vsdb::BranchName,
                 version_name: vsdb::VersionName,
                 force: bool
@@ -122,7 +122,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
             }
 
             fn branch_create_by_base_branch(
-                &self,
+                &mut self,
                 branch_name: vsdb::BranchName,
                 version_name: vsdb::VersionName,
                 base_branch_name: vsdb::ParentBranchName,
@@ -133,7 +133,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
             }
 
             fn branch_create_by_base_branch_version(
-                &self,
+                &mut self,
                 branch_name: vsdb::BranchName,
                 version_name: vsdb::VersionName,
                 base_branch_name: vsdb::ParentBranchName,
@@ -145,7 +145,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
             }
 
             unsafe fn branch_create_without_new_version(
-                &self,
+                &mut self,
                 branch_name: vsdb::BranchName,
                 force: bool
             ) -> ruc::Result<()> {
@@ -154,7 +154,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
             }
 
             unsafe fn branch_create_by_base_branch_without_new_version(
-                &self,
+                &mut self,
                 branch_name: vsdb::BranchName,
                 base_branch_name: vsdb::ParentBranchName,
                 force: bool
@@ -164,7 +164,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
             }
 
             unsafe fn branch_create_by_base_branch_version_without_new_version(
-                &self,
+                &mut self,
                 branch_name: vsdb::BranchName,
                 base_branch_name: vsdb::ParentBranchName,
                 base_version_name: vsdb::VersionName,
@@ -182,23 +182,23 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 #branch_has_versions
             }
 
-            fn branch_remove(&self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
+            fn branch_remove(&mut self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
                 #branch_remove
                 Ok(())
             }
 
-            fn branch_keep_only(&self, branch_names: &[vsdb::BranchName]) -> ruc::Result<()> {
+            fn branch_keep_only(&mut self, branch_names: &[vsdb::BranchName]) -> ruc::Result<()> {
                 #branch_keep_only
                 Ok(())
             }
 
-            fn branch_truncate(&self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
+            fn branch_truncate(&mut self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
                 #branch_truncate
                 Ok(())
             }
 
             fn branch_truncate_to(
-                &self,
+                &mut self,
                 branch_name: vsdb::BranchName,
                 last_version_name: vsdb::VersionName,
             ) -> ruc::Result<()> {
@@ -206,13 +206,13 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 Ok(())
             }
 
-            fn branch_pop_version(&self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
+            fn branch_pop_version(&mut self, branch_name: vsdb::BranchName) -> ruc::Result<()> {
                 #branch_pop_version
                 Ok(())
             }
 
             fn branch_merge_to(
-                &self,
+                &mut self,
                 branch_name: vsdb::BranchName,
                 target_branch_name: vsdb::BranchName
             ) -> ruc::Result<()> {
@@ -221,7 +221,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
             }
 
             unsafe fn branch_merge_to_force(
-                &self,
+                &mut self,
                 branch_name: vsdb::BranchName,
                 target_branch_name: vsdb::BranchName
             ) -> ruc::Result<()> {
@@ -234,7 +234,7 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 Ok(())
             }
 
-            fn prune(&self, reserved_ver_num: Option<usize>) -> ruc::Result<()> {
+            fn prune(&mut self, reserved_ver_num: Option<usize>) -> ruc::Result<()> {
                 #prune
                 Ok(())
             }
@@ -271,12 +271,12 @@ pub fn derive_vsmgmt(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                 Ok(true)
             }
 
-            fn version_clean_up_globally(&self) -> ruc::Result<()> {
+            fn version_clean_up_globally(&mut self) -> ruc::Result<()> {
                 #version_clean_up_globally
                 Ok(())
             }
 
-            unsafe fn version_revert_globally(&self, version_name: vsdb::VersionName) -> ruc::Result<()> {
+            unsafe fn version_revert_globally(&mut self, version_name: vsdb::VersionName) -> ruc::Result<()> {
                 #version_revert_globally
                 Ok(())
             }
@@ -322,7 +322,7 @@ fn gen_version_create(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_create(&self.#id, version_name).c(d!())?;
+                        vsdb::VsMgmt::version_create(&mut self.#id, version_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -333,7 +333,7 @@ fn gen_version_create(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_create(&self.#id, version_name).c(d!())?;
+                        vsdb::VsMgmt::version_create(&mut self.#id, version_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -353,7 +353,7 @@ fn gen_version_create_by_branch(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                         let id = &f.ident;
                         quote_spanned! {f.span()=>
-                            vsdb::VsMgmt::version_create_by_branch(&self.#id, version_name, branch_name)
+                            vsdb::VsMgmt::version_create_by_branch(&mut self.#id, version_name, branch_name)
                                 .c(d!())?;
                         }
                     });
@@ -365,7 +365,7 @@ fn gen_version_create_by_branch(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                         let id = Index::from(i);
                         quote_spanned! {f.span()=>
-                            vsdb::VsMgmt::version_create_by_branch(&self.#id, version_name, branch_name)
+                            vsdb::VsMgmt::version_create_by_branch(&mut self.#id, version_name, branch_name)
                                 .c(d!())?;
                         }
                     });
@@ -448,7 +448,7 @@ fn gen_version_pop(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_pop(&self.#id).c(d!())?;
+                        vsdb::VsMgmt::version_pop(&mut self.#id).c(d!())?;
                     }
                 });
                 quote! {
@@ -459,7 +459,7 @@ fn gen_version_pop(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_pop(&self.#id).c(d!())?;
+                        vsdb::VsMgmt::version_pop(&mut self.#id).c(d!())?;
                     }
                 });
                 quote! {
@@ -479,7 +479,7 @@ fn gen_version_pop_by_branch(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_pop_by_branch(&self.#id, branch_name).c(d!())?;
+                        vsdb::VsMgmt::version_pop_by_branch(&mut self.#id, branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -490,7 +490,7 @@ fn gen_version_pop_by_branch(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_pop_by_branch(&self.#id, branch_name).c(d!())?;
+                        vsdb::VsMgmt::version_pop_by_branch(&mut self.#id, branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -510,7 +510,7 @@ fn gen_version_rebase(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_rebase(&self.#id, base_version).c(d!())?;
+                        vsdb::VsMgmt::version_rebase(&mut self.#id, base_version).c(d!())?;
                     }
                 });
                 quote! {
@@ -521,7 +521,7 @@ fn gen_version_rebase(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_rebase(&self.#id, base_version).c(d!())?;
+                        vsdb::VsMgmt::version_rebase(&mut self.#id, base_version).c(d!())?;
                     }
                 });
                 quote! {
@@ -541,7 +541,7 @@ fn gen_version_rebase_by_branch(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_rebase_by_branch(&self.#id, base_version, branch_name)
+                        vsdb::VsMgmt::version_rebase_by_branch(&mut self.#id, base_version, branch_name)
                             .c(d!())?;
                     }
                 });
@@ -553,7 +553,7 @@ fn gen_version_rebase_by_branch(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_rebase_by_branch(&self.#id, base_version, branch_name)
+                        vsdb::VsMgmt::version_rebase_by_branch(&mut self.#id, base_version, branch_name)
                             .c(d!())?;
                     }
                 });
@@ -574,7 +574,7 @@ fn gen_branch_create(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_create(&self.#id, branch_name, version_name, force)
+                        vsdb::VsMgmt::branch_create(&mut self.#id, branch_name, version_name, force)
                             .c(d!())?;
                     }
                 });
@@ -586,7 +586,7 @@ fn gen_branch_create(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_create(&self.#id, branch_name, version_name, force)
+                        vsdb::VsMgmt::branch_create(&mut self.#id, branch_name, version_name, force)
                             .c(d!())?;
                     }
                 });
@@ -608,7 +608,7 @@ fn gen_branch_create_by_base_branch(data: &Data) -> TokenStream {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
                         vsdb::VsMgmt::branch_create_by_base_branch(
-                            &self.#id,
+                            &mut self.#id,
                             branch_name,
                             version_name,
                             base_branch_name,
@@ -626,7 +626,7 @@ fn gen_branch_create_by_base_branch(data: &Data) -> TokenStream {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
                         vsdb::VsMgmt::branch_create_by_base_branch(
-                            &self.#id,
+                            &mut self.#id,
                             branch_name,
                             version_name,
                             base_branch_name,
@@ -653,7 +653,7 @@ fn gen_branch_create_by_base_branch_version(data: &Data) -> TokenStream {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
                         vsdb::VsMgmt::branch_create_by_base_branch_version(
-                            &self.#id,
+                            &mut self.#id,
                             branch_name,
                             version_name,
                             base_branch_name,
@@ -671,7 +671,7 @@ fn gen_branch_create_by_base_branch_version(data: &Data) -> TokenStream {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
                         vsdb::VsMgmt::branch_create_by_base_branch_version(
-                            &self.#id,
+                            &mut self.#id,
                             branch_name,
                             version_name,
                             base_branch_name,
@@ -698,7 +698,7 @@ fn gen_branch_create_without_new_version(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_create_without_new_version(&self.#id, branch_name, force)
+                        vsdb::VsMgmt::branch_create_without_new_version(&mut self.#id, branch_name, force)
                             .c(d!())?;
                     }
                 });
@@ -710,7 +710,7 @@ fn gen_branch_create_without_new_version(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_create_without_new_version(&self.#id, branch_name, force)
+                        vsdb::VsMgmt::branch_create_without_new_version(&mut self.#id, branch_name, force)
                             .c(d!())?;
                     }
                 });
@@ -732,7 +732,7 @@ fn gen_branch_create_by_base_branch_without_new_version(data: &Data) -> TokenStr
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
                         vsdb::VsMgmt::branch_create_by_base_branch_without_new_version(
-                            &self.#id,
+                            &mut self.#id,
                             branch_name,
                             base_branch_name,
                             force
@@ -749,7 +749,7 @@ fn gen_branch_create_by_base_branch_without_new_version(data: &Data) -> TokenStr
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
                         vsdb::VsMgmt::branch_create_by_base_branch_without_new_version(
-                            &self.#id,
+                            &mut self.#id,
                             branch_name,
                             base_branch_name,
                             force
@@ -777,7 +777,7 @@ fn gen_branch_create_by_base_branch_version_without_new_version(
                         let id = &f.ident;
                         quote_spanned! {f.span()=>
                             vsdb::VsMgmt::branch_create_by_base_branch_version_without_new_version(
-                                &self.#id,
+                                &mut self.#id,
                                 branch_name,
                                 base_branch_name,
                                 base_version_name,
@@ -795,7 +795,7 @@ fn gen_branch_create_by_base_branch_version_without_new_version(
                         let id = Index::from(i);
                         quote_spanned! {f.span()=>
                             vsdb::VsMgmt::branch_create_by_base_branch_version_without_new_version(
-                                &self.#id,
+                                &mut self.#id,
                                 branch_name,
                                 base_branch_name,
                                 base_version_name,
@@ -882,7 +882,7 @@ fn gen_branch_remove(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_remove(&self.#id, branch_name).c(d!())?;
+                        vsdb::VsMgmt::branch_remove(&mut self.#id, branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -893,7 +893,7 @@ fn gen_branch_remove(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_remove(&self.#id, branch_name).c(d!())?;
+                        vsdb::VsMgmt::branch_remove(&mut self.#id, branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -913,7 +913,7 @@ fn gen_branch_keep_only(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_keep_only(&self.#id, branch_names).c(d!())?;
+                        vsdb::VsMgmt::branch_keep_only(&mut self.#id, branch_names).c(d!())?;
                     }
                 });
                 quote! {
@@ -924,7 +924,7 @@ fn gen_branch_keep_only(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_keep_only(&self.#id, branch_names).c(d!())?;
+                        vsdb::VsMgmt::branch_keep_only(&mut self.#id, branch_names).c(d!())?;
                     }
                 });
                 quote! {
@@ -944,7 +944,7 @@ fn gen_branch_truncate(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_truncate(&self.#id, branch_name).c(d!())?;
+                        vsdb::VsMgmt::branch_truncate(&mut self.#id, branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -955,7 +955,7 @@ fn gen_branch_truncate(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_truncate(&self.#id, branch_name).c(d!())?;
+                        vsdb::VsMgmt::branch_truncate(&mut self.#id, branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -975,7 +975,7 @@ fn gen_branch_truncate_to(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                         let id = &f.ident;
                         quote_spanned! {f.span()=>
-                            vsdb::VsMgmt::branch_truncate_to(&self.#id, branch_name, last_version_name).c(d!())?;
+                            vsdb::VsMgmt::branch_truncate_to(&mut self.#id, branch_name, last_version_name).c(d!())?;
                         }
                     });
                 quote! {
@@ -986,7 +986,7 @@ fn gen_branch_truncate_to(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                         let id = Index::from(i);
                         quote_spanned! {f.span()=>
-                            vsdb::VsMgmt::branch_truncate_to(&self.#id, branch_name, last_version_name).c(d!())?;
+                            vsdb::VsMgmt::branch_truncate_to(&mut self.#id, branch_name, last_version_name).c(d!())?;
                         }
                     });
                 quote! {
@@ -1006,7 +1006,7 @@ fn gen_branch_pop_version(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_pop_version(&self.#id, branch_name).c(d!())?;
+                        vsdb::VsMgmt::branch_pop_version(&mut self.#id, branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -1017,7 +1017,7 @@ fn gen_branch_pop_version(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_pop_version(&self.#id, branch_name).c(d!())?;
+                        vsdb::VsMgmt::branch_pop_version(&mut self.#id, branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -1037,7 +1037,7 @@ fn gen_branch_merge_to(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_merge_to(&self.#id, branch_name, target_branch_name).c(d!())?;
+                        vsdb::VsMgmt::branch_merge_to(&mut self.#id, branch_name, target_branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -1048,7 +1048,7 @@ fn gen_branch_merge_to(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_merge_to(&self.#id, branch_name, target_branch_name).c(d!())?;
+                        vsdb::VsMgmt::branch_merge_to(&mut self.#id, branch_name, target_branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -1068,7 +1068,7 @@ fn gen_branch_merge_to_force(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_merge_to_force(&self.#id, branch_name, target_branch_name).c(d!())?;
+                        vsdb::VsMgmt::branch_merge_to_force(&mut self.#id, branch_name, target_branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -1079,7 +1079,7 @@ fn gen_branch_merge_to_force(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::branch_merge_to_force(&self.#id, branch_name, target_branch_name).c(d!())?;
+                        vsdb::VsMgmt::branch_merge_to_force(&mut self.#id, branch_name, target_branch_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -1130,7 +1130,7 @@ fn gen_prune(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::prune(&self.#id, reserved_ver_num).c(d!())?;
+                        vsdb::VsMgmt::prune(&mut self.#id, reserved_ver_num).c(d!())?;
                     }
                 });
                 quote! {
@@ -1141,7 +1141,7 @@ fn gen_prune(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::prune(&self.#id, reserved_ver_num).c(d!())?;
+                        vsdb::VsMgmt::prune(&mut self.#id, reserved_ver_num).c(d!())?;
                     }
                 });
                 quote! {
@@ -1328,7 +1328,7 @@ fn gen_version_clean_up_globally(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_clean_up_globally(&self.#id).c(d!())?;
+                        vsdb::VsMgmt::version_clean_up_globally(&mut self.#id).c(d!())?;
                     }
                 });
                 quote! {
@@ -1339,7 +1339,7 @@ fn gen_version_clean_up_globally(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_clean_up_globally(&self.#id).c(d!())?;
+                        vsdb::VsMgmt::version_clean_up_globally(&mut self.#id).c(d!())?;
                     }
                 });
                 quote! {
@@ -1359,7 +1359,7 @@ fn gen_version_revert_globally(data: &Data) -> TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let id = &f.ident;
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_revert_globally(&self.#id, version_name).c(d!())?;
+                        vsdb::VsMgmt::version_revert_globally(&mut self.#id, version_name).c(d!())?;
                     }
                 });
                 quote! {
@@ -1370,7 +1370,7 @@ fn gen_version_revert_globally(data: &Data) -> TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                     let id = Index::from(i);
                     quote_spanned! {f.span()=>
-                        vsdb::VsMgmt::version_revert_globally(&self.#id, version_name).c(d!())?;
+                        vsdb::VsMgmt::version_revert_globally(&mut self.#id, version_name).c(d!())?;
                     }
                 });
                 quote! {
